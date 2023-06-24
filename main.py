@@ -1,25 +1,85 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
-from mod_updater import select_folder, confirm_folder
+import tkinter.filedialog as filedialog
+import tkinter.ttk as ttk
+import tkinter.messagebox as messagebox
+import scanversions
+import setconfig
 
-# 创建GUI
+def select_folder():
+    global selected_folder, confirm_button, isolation_checkbox, folder_path, version_select_label
+    folder_path = filedialog.askdirectory()
+    if folder_path.endswith(".minecraft"):
+        setconfig.set_config("minecraft_folder", folder_path)
+        selected_folder = folder_path
+        version_select_label.pack(side=tk.LEFT)
+        select_button.pack_forget()
+        isolation_checkbox.pack(side=tk.LEFT, padx=10)
+        confirm_button.config(state=tk.NORMAL)
+    else:
+        messagebox.showwarning("警告", "请选择名为'.minecraft'的文件夹！")
+        confirm_button.config(state=tk.DISABLED)
+
+def confirm_folder():
+    global selected_folder, folder_path
+    if folder_path is not None and folder_path.endswith(".minecraft"):
+        setconfig.set_config("minecraft_folder", folder_path)
+        setconfig.set_config("isolation_enabled", isolation_var.get())
+        print("进度：确认完成")
+        print("版本隔离已开启" if isolation_var.get() else "版本隔离未开启")
+        versions = scanversions.get_versions(folder_path)
+        combo_box.config(values=versions)
+        for widget in [select_button, isolation_checkbox, confirm_button, version_select_label]:
+            widget.pack_forget()
+        version_label.config(text="")
+        version_select_label.pack(side=tk.LEFT)
+        combo_box.pack(side=tk.LEFT)
+        version_frame.pack(side=tk.LEFT, padx=10)
+
+    else:
+        messagebox.showerror("错误", "你选择的文件夹不正确！")
+        confirm_button.config(state=tk.DISABLED)
+
+def on_select(event):
+    global selected_version
+    selected_version = event.widget.get()
+    print(f"已选择版本：{selected_version}")
+
 root = tk.Tk()
-root.title("Mod版本升级工具")
-root.iconbitmap("res/Anvil_1.ico")
-root.geometry("800x450")
-root.minsize(400, 225)
-root.resizable(True, True)
-
-# 创建GUI组件
+root.title("Minecraft_Mods_Updater")
+root.geometry("500x100")
 frame = tk.Frame(root)
-frame.pack(pady=10)
-text_box = tk.Text(frame, height=1, width=50)
-text_box.pack(side=tk.LEFT)
-isolation_var = tk.BooleanVar(value=False)
-isolation_checkbox = tk.Checkbutton(frame, text="是否开启版本隔离", variable=isolation_var)
-tk.Button(frame, text="选择.minecraft文件夹", width=20, height=2, command=lambda: select_folder(text_box, confirm_button, isolation_checkbox)).pack(side=tk.LEFT, padx=10)
-confirm_button = tk.Button(frame, text="确认", width=10, height=2, state=tk.DISABLED, command=lambda: confirm_folder(text_box, isolation_var, frame))
-confirm_button.pack(side=tk.RIGHT, padx=10)
+frame.pack()
 
-# 进入主循环
+# 版本选择标签
+version_select_label = tk.Label(frame, text="选择你的Minecraft版本：")
+
+# 版本下拉框和文本框
+version_frame = tk.Frame(frame)
+version_label = tk.Label(version_frame, text="版本：")
+version_label.pack(side=tk.LEFT)
+
+combo_box = ttk.Combobox(version_frame, state="readonly")
+combo_box.bind("<<ComboboxSelected>>", on_select)
+
+selected_folder = setconfig.get_config("minecraft_folder")
+if selected_folder is not None:
+    selected_folder = selected_folder.strip("\"")
+    if selected_folder.endswith(".minecraft"):
+        selected_folder = selected_folder
+        version_select_label.pack(side=tk.LEFT)
+        versions = scanversions.get_versions(selected_folder)
+        combo_box.config(values=versions)
+        combo_box.pack(side=tk.LEFT)
+        version_frame.pack(side=tk.LEFT, padx=10)
+else:
+    # 选择文件夹按钮
+    select_button = tk.Button(frame, text="选择.minecraft文件夹", command=select_folder)
+    select_button.pack(side=tk.LEFT, padx=10)
+    confirm_button = tk.Button(frame, text="确认", width=10, height=2, state=tk.DISABLED, command=confirm_folder)
+    confirm_button.pack(side=tk.LEFT)
+    isolation_var = tk.BooleanVar()
+    isolation_checkbox = tk.Checkbutton(frame, text="启用版本隔离", variable=isolation_var, onvalue=True, offvalue=False)
+    isolation_checkbox.pack_forget()
+    confirm_button.config(state=tk.DISABLED)
+
 root.mainloop()
