@@ -4,14 +4,15 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as messagebox
 import scanversions
 import setconfig
+import mod_updater
+
+
 
 def select_folder():
     global selected_folder, confirm_button, isolation_checkbox, folder_path, version_select_label
     folder_path = filedialog.askdirectory()
     if folder_path.endswith(".minecraft"):
-        setconfig.set_config("minecraft_folder", folder_path)
         selected_folder = folder_path
-        version_select_label.pack(side=tk.LEFT)
         select_button.pack_forget()
         isolation_checkbox.pack(side=tk.LEFT, padx=10)
         confirm_button.config(state=tk.NORMAL)
@@ -33,11 +34,17 @@ def confirm_folder():
         version_label.config(text="")
         version_select_label.pack(side=tk.LEFT)
         combo_box.pack(side=tk.LEFT)
+
+        wrapper_func = lambda path=folder_path: mod_updater.upgrade_mods(path)
+        upgrade_button = tk.Button(frame, text="升级", command=wrapper_func)
+        upgrade_button.pack(side=tk.LEFT, padx=10)
+
         version_frame.pack(side=tk.LEFT, padx=10)
 
     else:
         messagebox.showerror("错误", "你选择的文件夹不正确！")
         confirm_button.config(state=tk.DISABLED)
+
 
 def on_select(event):
     global selected_version
@@ -61,7 +68,8 @@ version_label.pack(side=tk.LEFT)
 combo_box = ttk.Combobox(version_frame, state="readonly")
 combo_box.bind("<<ComboboxSelected>>", on_select)
 
-selected_folder = setconfig.get_config("minecraft_folder")
+selected_folder = setconfig.get_config("minecraft_folder") # 检测是否设置过文件夹
+selected_version = setconfig.get_config("isolation_enabled")
 if selected_folder is not None:
     selected_folder = selected_folder.strip("\"")
     if selected_folder.endswith(".minecraft"):
