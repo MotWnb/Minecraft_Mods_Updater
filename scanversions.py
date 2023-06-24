@@ -19,9 +19,5 @@ def get_versions(folder_path):
     for version_dir in os.listdir(versions_dir):
         version_path = os.path.join(versions_dir, version_dir, f"{version_dir}.json")
         if os.path.isfile(version_path):
-            version_type = get_version_type(version_path)
-            version_name = version_dir
-            if version_type != "":
-                version_name += f" ({version_type})"
-            versions.append(version_name)
+            versions.append(version_dir)
     return versions

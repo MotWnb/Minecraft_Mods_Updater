@@ -1,21 +1,55 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
+import os
+import json
+import fnmatch
+import zipfile
+import tempfile
 
-def select_folder(text_box, confirm_button, isolation_checkbox):
-    folder_path = filedialog.askdirectory()
-    if folder_path.endswith(".minecraft"):
-        text_box.delete("1.0", tk.END)
-        text_box.insert(tk.END, folder_path)
-        confirm_button.config(state=tk.NORMAL)
-        isolation_checkbox.pack(side=tk.LEFT, padx=10)
-    else:
-        messagebox.showwarning("警告", "请选择名为'.minecraft'的文件夹！")
-        confirm_button.config(state=tk.DISABLED)
-        isolation_checkbox.pack_forget()
+def unzip(path, type):
+    # 指定要解压的 .jar 文件路径
+    jar_file = path
 
-def confirm_folder(text_box, isolation_var):
-    if text_box.get("1.0", tk.END).strip().endswith(".minecraft"):
-        print("进度：确认完成")
-        print("版本隔离已开启" if isolation_var.get() else "版本隔离未开启")
-    else:
-        messagebox.showerror("错误", "你选择的文件夹不正确！")
+    # 创建 ZipFile 对象
+    with zipfile.ZipFile(jar_file, "r") as zip_ref:
+        # 解压 .jar 文件中的所有文件
+        temp_dir = tempfile.mkdtemp()
+        zip_ref.extractall(temp_dir)
+    
+    if type == 'Fabric':
+    # 检查临时文件夹中是否存在文件 fabric.mod.json
+        fabric_mod_json = os.path.join(temp_dir, "fabric.mod.json")
+        if os.path.exists(fabric_mod_json):
+            print("找到fabric.mod.json")
+            with open(fabric_mod_json, "r") as f:
+                data = json.load(f)
+            
+            homepage = data["contact"]["homepage"]
+            sources = data["contact"]["sources"]
+
+            # 输出结果
+            print("homepage:", homepage)
+            print("sources:", sources)
+
+        else:
+            print("未找到fabric.mod.json")
+
+    for root, dirs, files in os.walk(temp_dir, topdown=False):
+        for name in files:
+            os.remove(os.path.join(root, name))
+        for name in dirs:
+            os.rmdir(os.path.join(root, name))
+    os.rmdir(temp_dir)
+
+
+
+def upgrade_mods(path, type):
+    # 在这里添加您更新 Minecraft 模组的代码
+    # print(f"正在更新版本为 '{path}' 的 Minecraft 模组...")
+    for dirpath, dirname, filenames in os.walk(path):
+        # 遍历当前目录下的所有文件
+        for filename in filenames:
+            # 判断文件名是否以 .jar 结尾
+            if fnmatch.fnmatch(filename, "*.jar"):
+                # 如果是 .jar 文件，则输出文件路径
+                print('发现一个mod:', filename)
+                filepath = os.path.join(dirpath, filename)
+                unzip(filepath, type)
