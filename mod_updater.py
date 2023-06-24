@@ -3,6 +3,7 @@ import json
 import fnmatch
 import zipfile
 import tempfile
+import simplejson as json
 
 def unzip(path, type):
     # 指定要解压的 .jar 文件路径
@@ -19,18 +20,26 @@ def unzip(path, type):
         fabric_mod_json = os.path.join(temp_dir, "fabric.mod.json")
         if os.path.exists(fabric_mod_json):
             print("找到fabric.mod.json")
-            with open(fabric_mod_json, "r") as f:
-                data = json.load(f)
-            
-            homepage = data["contact"]["homepage"]
-            sources = data["contact"]["sources"]
+            with open(fabric_mod_json, "r", encoding="utf-8") as f:
+                try:
+                    data = json.loads(f.read())
+                except json.JSONDecodeError as e:
+                    print(f"JSON解析错误：{e}")
+                    return
+
+            homepage = data.get("contact", {}).get("homepage")
+            sources = data.get("contact", {}).get("sources")
 
             # 输出结果
-            print("homepage:", homepage)
-            print("sources:", sources)
+            if homepage:
+                print("homepage:", homepage)
+            if sources:
+                print("sources:", sources)
+                
 
         else:
             print("未找到fabric.mod.json")
+
 
     for root, dirs, files in os.walk(temp_dir, topdown=False):
         for name in files:
