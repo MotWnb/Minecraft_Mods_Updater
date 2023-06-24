@@ -2,7 +2,7 @@ import os
 import json
 
 def get_version_type(version_path):
-    with open(version_path, "r") as version_file:
+    with open(version_path, "r", encoding='utf-8') as version_file:
         version_data = json.load(version_file)
         libraries = version_data.get("libraries", [])
         for library in libraries:

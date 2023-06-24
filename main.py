@@ -102,6 +102,7 @@ version_label.pack(side=tk.LEFT)
 
 combo_box = ttk.Combobox(version_frame, state="readonly")
 combo_box.bind("<<ComboboxSelected>>", on_select)
+combo_box.config(width=50, height=20)
 
 selected_folder = setconfig.get_config("minecraft_folder")  # 检测是否设置过文件夹
 selected_version = setconfig.get_config("isolation_enabled")

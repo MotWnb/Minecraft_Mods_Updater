@@ -3,7 +3,7 @@ import json
 # 读取配置文件
 def read_config():
     try:
-        with open("config.json", "r") as f:
+        with open("config.json", "r", encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         # 如果文件不存在，则返回空字典
@@ -11,7 +11,7 @@ def read_config():
 
 # 写入配置文件
 def write_config(config):
-    with open("config.json", "w") as f:
+    with open("config.json", "w", encoding='utf-8') as f:
         json.dump(config, f)
 
 # 获取配置值
