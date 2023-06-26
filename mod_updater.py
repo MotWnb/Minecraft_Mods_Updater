@@ -8,7 +8,6 @@ import zipfile
 curseforge_new = []
 curseforge_old = []
 modrinth = []
-github = []
 
 def process_fabric_mod_json(file_path):
     with open(file_path, "r", encoding="utf-8") as f:

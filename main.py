@@ -57,7 +57,8 @@ def update():
             comboed_version_name = versions[combo_box.current()]
             comboed_version_path = os.path.join(versions_folder, comboed_version_name)
             type = scanversions.get_version_type(os.path.join(comboed_version_path, f"{comboed_version_name}.json"))
-            mod_updater.upgrade_mods(os.path.join(comboed_version_path, "mods"), type)
+            mods_path = os.path.join(comboed_version_path, "mods")
+            mod_updater.upgrade_mods(mods_path, type)
         upgrade_button = tk.Button(frame, text="升级", command=wrapper_func)
         upgrade_button.pack(side=tk.LEFT, padx=10)
 
