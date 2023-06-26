@@ -3,6 +3,7 @@ import os
 import json
 import tempfile
 import zipfile
+# import modrinth_spider
 
 curseforge_new = []
 curseforge_old = []
@@ -26,8 +27,6 @@ def process_fabric_mod_json(file_path):
         curseforge_old.append({"homepage": homepage})
     elif homepage is not None and "modrinth.com" in homepage:
         modrinth.append({"homepage": homepage})
-    elif homepage is not None and "github.com" in homepage:
-        github.append({"homepage": homepage})
 
     if sources is not None and "www.curseforge.com" in sources:
         curseforge_new.append({"sources": sources})
@@ -35,8 +34,6 @@ def process_fabric_mod_json(file_path):
         curseforge_old.append({"sources": sources})
     elif sources is not None and "modrinth.com" in sources:
         modrinth.append({"sources": sources})
-    elif sources is not None and "github.com" in sources:
-        github.append({"sources": sources})
 
         # 如果你想获取更多信息，你可以在这里继续处理 sources 字段
         # ...
@@ -86,6 +83,6 @@ def upgrade_mods(path, type):
 
     with open("modrinth.json", "w", encoding="utf-8") as f:
         json.dump(modrinth, f, ensure_ascii=False, indent=2)
-
-    with open("github.json", "w", encoding="utf-8") as f:
-        json.dump(github, f, ensure_ascii=False, indent=2)
+    
+    version = input("请输入要升级到的版本号(Minecraft的):")
+    # modrinth_spider.upgrade_mods(version)
