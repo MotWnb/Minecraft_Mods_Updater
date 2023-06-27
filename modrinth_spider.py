@@ -116,4 +116,4 @@ def run(version, version_type):
     get_information(version, version_type)
     
 
-run("1.19.4", "fabric")
+# run("1.19.4", "fabric")
