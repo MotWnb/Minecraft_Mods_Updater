@@ -26,8 +26,9 @@ def update():
     print(isolation)
     minecraft_folder = setconfig.get_config("minecraft_folder").replace("/", "\\")
     if isolation == False:
-        print("版本隔离已开启")
-        mod_updater.upgrade_mods(os.path.join(minecraft_folder, "mods"))
+        print("版本隔离已关闭")
+        type = input('请输入我的世界的类型(小写,如fabric/forge):')
+        mod_updater.upgrade_mods(os.path.join(minecraft_folder, "mods"), type)
     else:
         versions_folder = os.path.join(minecraft_folder, "versions")
         '''

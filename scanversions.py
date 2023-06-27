@@ -8,9 +8,9 @@ def get_version_type(version_path):
         for library in libraries:
             name = library.get("name", "")
             if "fabric" in name.lower() or "sponge" in name.lower():
-                return "Fabric"
+                return "fabric"
             elif "forge" in name.lower() or "mcp" in name.lower():
-                return "Forge"
+                return "forge"
         return ""
 
 def get_versions(folder_path):
