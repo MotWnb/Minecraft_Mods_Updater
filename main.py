@@ -91,8 +91,7 @@ def on_select(event):
 root = tk.Tk()
 root.title("Minecraft_Mods_Updater")
 root.geometry("800x450")
-icon = tk.PhotoImage(file="res/Anvil_1.ico")
-root.iconphoto(True, icon)
+root.iconbitmap('Anvil_1.ico')
 frame = tk.Frame(root)
 frame.pack()
 
