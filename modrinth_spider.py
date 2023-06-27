@@ -80,10 +80,10 @@ def get_information(version, version_type):
             backup_folder_path = os.path.join(os.getcwd(), "backup")
             if not os.path.exists(backup_folder_path):
                 os.mkdir(backup_folder_path)
-            for root, dirs, files in os.path.join(minecraft_mods_dir, ""):
+            for root, dirs, files in os.walk(os.path.join(minecraft_mods_dir, "")):
                 for file in files:
                     # 如果文件名与指定的文件名相同，则删除该文件
-                    if file == file:
+                    if file == modname:
                         file_path = os.path.join(root, file)
                         backup_file_path = os.path.join(backup_folder_path, file)
                         shutil.move(file_path, backup_file_path)
@@ -114,6 +114,3 @@ def run(version, version_type):
     print("getting!!!!!!")
     load_json()
     get_information(version, version_type)
-    
-
-# run("1.19.4", "fabric")

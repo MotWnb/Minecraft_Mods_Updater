@@ -50,7 +50,6 @@ def update():
                 version_name = version
             versiontypes.append(version_name)
         combo_box.config(values=versiontypes)
-        print()
         version_select_label.pack(side=tk.LEFT)
         combo_box.pack(side=tk.LEFT)
         print(versions)
@@ -92,6 +91,8 @@ def on_select(event):
 root = tk.Tk()
 root.title("Minecraft_Mods_Updater")
 root.geometry("800x450")
+icon = tk.PhotoImage(file="res/Anvil_1.ico")
+root.iconphoto(True, icon)
 frame = tk.Frame(root)
 frame.pack()
 
