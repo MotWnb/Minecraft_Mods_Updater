@@ -1,5 +1,4 @@
-autoDownload==0.0.9
-autoDownload==0.0.9
-cloudscraper==1.2.71
-lxml==4.9.2
-Requests==2.31.0
+autoDownload
+cloudscraper
+lxml
+Requests

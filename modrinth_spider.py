@@ -6,9 +6,7 @@ import setconfig
 import os
 import shutil
 
-
 modrinth_list = []
-
 
 
 def load_json():
@@ -73,8 +71,6 @@ def get_information(version, version_type):
     print('Download success!')
     minecraft_mods_dir = setconfig.get_config("mods_path")
     for mod in modrinth_list:
-        homepage = mod.get('homepage')
-        sources = mod.get('sources')
         modname = mod.get('modname')
         if modname:
             backup_folder_path = os.path.join(os.getcwd(), "backup")
@@ -107,10 +103,7 @@ def get_information(version, version_type):
 
     print("File move completed.")
 
-    
-            
 
 def run(version, version_type):
-    print("getting!!!!!!")
     load_json()
     get_information(version, version_type)
